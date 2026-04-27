@@ -570,6 +570,22 @@
 <script>
     if (typeof VK !== 'undefined') {
         VK.init({apiId: 0});
+    // --- Инициализация для VK Mini App ---
+if (window.location !== window.parent.location) {
+    try {
+        if (typeof vkBridge !== 'undefined') {
+            vkBridge.send('VKWebAppInit');
+            console.log('VK Bridge: Init sent');
+        } else if (typeof window.VKWebAppInit === 'function') {
+            window.VKWebAppInit();
+            console.log('VK: Direct init sent');
+        } else {
+            console.log('VK: Bridge not found, but app will work');
+        }
+    } catch(e) {
+        console.log('VK Init error:', e);
+    }
+}
     }
 </script>
 
