@@ -1,104 +1,73 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="vk_allow_redirect" content="true">
     <title>Энциклопедия Дзена</title>
     <style>
-        /* ВЕСЬ ВАШ СТИЛЬ ОСТАЕТСЯ БЕЗ ИЗМЕНЕНИЙ */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #e8e4dc; padding: 20px; min-height: 100vh; }
-        .book { max-width: 850px; margin: 0 auto; background: #fffef7; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); overflow: hidden; min-height: 600px; }
-        @keyframes pageFlipLeft { 0% { opacity: 0; transform: rotateY(-40deg); transform-origin: left center; } 100% { opacity: 1; transform: rotateY(0deg); transform-origin: left center; } }
-        .page-content { padding: 40px 35px; animation: pageFlipLeft 0.4s ease-out; }
-        .toc { padding: 40px 35px; }
-        .toc h1 { font-size: 32px; margin-bottom: 8px; color: #1a1a1a; display: flex; align-items: center; gap: 10px; }
-        .toc-subtitle { color: #8b8b8b; margin-bottom: 35px; font-size: 14px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
-        .chapter-list { list-style: none; }
-        .chapter-item { padding: 16px 15px; border-bottom: 1px solid #eee; cursor: pointer; transition: all 0.2s ease; border-radius: 12px; margin-bottom: 4px; }
-        .chapter-item:hover { background: #f5f3ed; transform: translateX(5px); }
-        .chapter-title { font-size: 18px; font-weight: 500; color: #1a1a1a; }
-        .chapter-type { font-size: 12px; color: #a0a0a0; margin-top: 5px; }
-        .back-button { background: none; border: none; font-size: 16px; color: #8b5e3c; cursor: pointer; margin-bottom: 25px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 30px; }
-        .back-button:hover { background: #f0ede5; }
-        .page-image { width: 100%; border-radius: 20px; margin-bottom: 25px; object-fit: cover; max-height: 300px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .page-title { font-size: 28px; margin-bottom: 20px; color: #2c3e50; border-left: 4px solid #8b5e3c; padding-left: 20px; }
-        .page-text { line-height: 1.7; color: #2c2c2c; font-size: 16px; }
-        .page-text h2 { font-size: 24px; margin: 25px 0 12px; color: #2c3e50; }
-        .page-text h3 { font-size: 20px; margin: 20px 0 10px; color: #8b5e3c; }
-        .page-text p { margin-bottom: 16px; }
-        .page-text ul, .page-text ol { margin: 12px 0; padding-left: 25px; }
-        .page-text li { margin: 8px 0; }
-        .nav-buttons { display: flex; justify-content: space-between; gap: 15px; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
-        .nav-btn { flex: 1; padding: 12px; background: #f0ede5; border: none; border-radius: 40px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; color: #4a3b2c; }
-        .nav-btn:hover { background: #e0d8cc; transform: translateY(-2px); }
-        .terms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin: 20px 0; }
-        .term-item { background: #f8f6f0; padding: 12px 15px; border-radius: 14px; border-left: 4px solid #8b5e3c; font-size: 14px; }
-        .part-block { background: linear-gradient(135deg, #f5f0e6 0%, #ede6d8 100%); padding: 20px; border-radius: 20px; margin: 20px 0; text-align: center; }
-        footer { text-align: center; padding: 25px; background: #f8f6f0; color: #999; font-size: 12px; border-top: 1px solid #eee; }
-        @media (max-width: 600px) { .toc, .page-content { padding: 25px 20px; } .page-title { font-size: 24px; } .toc h1 { font-size: 26px; } }
+        body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f0f0f0; }
+        .book { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        .chapter { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .chapter:hover { background: #f5f5f5; }
+        button { background: #0077cc; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
+    <div class="book" id="app">
+        <h1>📚 Энциклопедия Дзена</h1>
+        <p>Загрузка...</p>
+    </div>
 
-<div class="book" id="app"></div>
+    <script>
+        // Полная база данных энциклопедии
+        const chapters = [
+            { id: 'intro', title: 'Вступление', text: 'Почему нужно прочесть! Здесь вы узнаете основы.' },
+            { id: 'ch1', title: 'Глава 1. Словарь терминов', text: '30 терминов: алгоритм, вовлеченность, CTR, CPM и другие.' },
+            { id: 'ch2', title: 'Глава 2. Алгоритм Дзена', text: 'Как работает нейросеть и принцип снежного кома.' },
+            { id: 'ch3', title: 'Глава 3. Форматы контента', text: 'Статьи, посты, видео, нарративы.' },
+            { id: 'conclusion', title: 'Заключение', text: 'Поздравляем! Вы прошли основы.' }
+        ];
 
-<script>
-    // ДАННЫЕ ЭНЦИКЛОПЕДИИ
-    const chapters = [
-        { id: 'intro', title: 'Вступление', type: '📖 Вступление', image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800', text: `<h2>📖 Почему нужно прочесть!</h2><p>Эта энциклопедия создана для тех, кто хочет начать путь в Дзене осознанно, без ошибок и разочарований.</p><p><strong>Основные вопросы новичка, которые разберём:</strong></p><ul><li>🤔 Как работает алгоритм Дзена на самом деле?</li><li>📈 Почему одни материалы набирают миллионы, а другие — нет?</li><li>🚀 С чего начать, если у вас 0 подписчиков?</li><li>💰 Как реально зарабатывать и не нарушить правила?</li></ul><div style="background: #f0ede5; padding: 20px; border-radius: 16px; margin-top: 20px; text-align: center;"><p>✨ <strong>Добро пожаловать в мир Дзена!</strong> ✨</p></div>` },
-        { id: 'part1', title: 'Часть I. Как устроен Дзен изнутри', type: '📁 Раздел', image: null, text: `<div class="part-block"><h3>📁 Часть I</h3><p>В этой части мы разберём фундаментальные понятия, алгоритмы и правила платформы.</p></div>` },
-        { id: 'chapter1', title: 'Глава 1. Словарь дзен-автора: 30 терминов', type: '📖 Глава', image: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=800', text: `<h3>📚 30 терминов</h3><div class="terms-grid"><div class="term-item"><strong>Алгоритм Дзена</strong><br>система ранжирования</div><div class="term-item"><strong>Вовлечённость (ER)</strong><br>процент активных действий</div><div class="term-item"><strong>Воронка чтения</strong><br>путь от показа до дочитывания</div><div class="term-item"><strong>Дочитывание</strong><br>дочитал до конца</div><div class="term-item"><strong>Заголовок</strong><br>первое, что видит читатель</div><div class="term-item"><strong>Монетизация</strong><br>заработок на контенте</div><div class="term-item"><strong>CTR</strong><br>кликабельность</div><div class="term-item"><strong>Теневой бан</strong><br>скрытое ограничение</div></div>` },
-        { id: 'chapter2', title: 'Глава 2. Алгоритм Дзена', type: '📖 Глава', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800', text: `<h3>🤖 Что такое алгоритм Дзена</h3><p>Алгоритм Дзена — это нейросеть, которая учится на поведении миллионов пользователей.</p><h3>📊 Поведенческие сигналы</h3><ul><li>✅ Кликнул по карточке → плюс</li><li>✅ Дочитал до конца → мощный плюс</li><li>✅ Поставил лайк → сигнал качества</li><li>❌ Закрыл быстро → минус</li></ul><h3>❄️ Принцип снежного кома</h3><p>Сначала тестовые показы (100-500). Если сигналы хорошие — вторая волна (тысячи).</p>` },
-        { id: 'conclusion', title: 'Заключение', type: '🏁 Заключение', image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800', text: `<h2>🎉 Поздравляем!</h2><p>Теперь у вас есть база для старта в Дзене.</p><h3>📋 Что дальше?</h3><ul><li>📝 Зарегистрируйтесь в Дзене</li><li>✍️ Напишите первые статьи</li><li>📊 Анализируйте публикации</li></ul><div style="background: #f0ede5; padding: 20px; border-radius: 16px; text-align: center;"><p>❤️ <strong>Успехов на платформе!</strong></p></div>` }
-    ];
-
-    let currentChapter = null;
-
-    function render() {
-        const app = document.getElementById('app');
-        if (currentChapter === null) {
-            let html = `<div class="toc"><h1>📚 Энциклопедия Дзена</h1><div class="toc-subtitle">Полный гид по платформе • 30+ терминов</div><ul class="chapter-list">`;
-            chapters.forEach(ch => { html += `<li class="chapter-item" data-id="${ch.id}"><div class="chapter-title">${ch.title}</div><div class="chapter-type">${ch.type}</div></li>`; });
-            html += `</ul></div><footer>📖 Энциклопедия для авторов Дзена</footer>`;
-            app.innerHTML = html;
-            document.querySelectorAll('.chapter-item').forEach(item => {
-                item.addEventListener('click', () => { currentChapter = chapters.find(c => c.id === item.getAttribute('data-id')); render(); });
+        function showMainMenu() {
+            let html = '<h1>📚 Энциклопедия Дзена</h1><p>Полный гид по платформе</p>';
+            chapters.forEach(ch => {
+                html += `<div class="chapter" onclick="showChapter('${ch.id}')"><strong>${ch.title}</strong><br><span style="font-size:12px;color:#888;">Нажмите, чтобы прочитать</span></div>`;
             });
-        } else {
-            const idx = chapters.findIndex(c => c.id === currentChapter.id);
-            const prev = idx > 0 ? chapters[idx-1] : null;
-            const next = idx < chapters.length-1 ? chapters[idx+1] : null;
-            let html = `<div class="page-content"><button class="back-button" id="backToTOC">← К содержанию</button>${currentChapter.image ? `<img src="${currentChapter.image}" class="page-image">` : ''}<div class="page-title">${currentChapter.title}</div><div class="page-text">${currentChapter.text}</div><div class="nav-buttons">${prev ? `<button class="nav-btn" id="prevChapter">← ${prev.title}</button>` : '<button class="nav-btn" disabled style="opacity:0.5;">← Назад</button>'}${next ? `<button class="nav-btn" id="nextChapter">${next.title} →</button>` : '<button class="nav-btn" disabled style="opacity:0.5;">Вперёд →</button>'}</div></div><footer>📖 Страница ${idx+1} из ${chapters.length}</footer>`;
-            app.innerHTML = html;
-            document.getElementById('backToTOC')?.addEventListener('click', () => { currentChapter = null; render(); });
-            document.getElementById('prevChapter')?.addEventListener('click', () => { const i = chapters.findIndex(c => c.id === currentChapter.id); if (i > 0) { currentChapter = chapters[i-1]; render(); } });
-            document.getElementById('nextChapter')?.addEventListener('click', () => { const i = chapters.findIndex(c => c.id === currentChapter.id); if (i < chapters.length-1) { currentChapter = chapters[i+1]; render(); } });
+            html += `<footer style="margin-top:30px; text-align:center; font-size:12px; color:#888;">📖 VK Mini App • Энциклопедия создана для авторов Дзена</footer>`;
+            document.getElementById('app').innerHTML = html;
         }
-    }
 
-    render();
+        window.showChapter = function(id) {
+            const chapter = chapters.find(ch => ch.id === id);
+            if (chapter) {
+                document.getElementById('app').innerHTML = `
+                    <button onclick="showMainMenu()">← К содержанию</button>
+                    <h1>${chapter.title}</h1>
+                    <p>${chapter.text}</p>
+                    <button onclick="showMainMenu()">Вернуться к содержанию</button>
+                `;
+            }
+        };
 
-    // ИНИЦИАЛИЗАЦИЯ VK (правильная)
-    window.addEventListener('load', function() {
-        if (window.location !== window.parent.location) {
-            try {
-                if (typeof window.VKWebAppInit === 'function') {
-                    window.VKWebAppInit();
-                    console.log('✅ VK Mini App initialized');
-                } else {
-                    console.log('⚠️ VK Bridge not available');
-                }
-            } catch(e) {
-                console.log('VK Init error:', e);
+        // Инициализация VK Mini App
+        function initVK() {
+            if (window.location !== window.parent.location) {
+                try {
+                    if (typeof window.VKWebAppInit === 'function') {
+                        window.VKWebAppInit();
+                        console.log('VK Mini App initialized');
+                    }
+                } catch(e) { console.log('VK init error:', e); }
             }
         }
-    });
-</script>
 
-<!-- Подключаем VK Bridge -->
-<script src="https://vk.com/js/api/xd_connection.js?2"></script>
-
+        window.onload = () => {
+            showMainMenu();
+            initVK();
+        };
+    </script>
+    <script src="https://vk.com/js/api/xd_connection.js?2"></script>
 </body>
 </html>
